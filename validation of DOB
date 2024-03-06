@@ -1,0 +1,17 @@
+%{
+#include <stdio.h>
+%}
+
+%%
+[0-9]{4}-[0-9]{2}-[0-9]{2} {
+    printf("Valid DOB: %s\n", yytext);
+}
+.|\n {
+    printf("Invalid DOB\n");
+}
+%%
+
+int main() {
+    yylex();
+    return 0;
+}
