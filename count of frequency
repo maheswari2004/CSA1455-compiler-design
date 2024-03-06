@@ -1,0 +1,18 @@
+%{
+#include <stdio.h>
+int word_count = 0;
+%}
+
+%%
+"given_word"    { word_count++; }
+.               { }
+%%
+
+int main()
+{
+    yyin = fopen("input.txt", "r");
+    yylex();
+    printf("Frequency of the word 'given_word': %d\n", word_count);
+    fclose(yyin);
+    return 0;
+}
