@@ -1,0 +1,114 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+#define MAX_LENGTH 15
+
+char ip_sym[MAX_LENGTH], stack[MAX_LENGTH];
+int ip_ptr = 0, st_ptr = 0, len;
+
+void check();
+
+int main() {
+    printf("\n\t\t SHIFT REDUCE PARSER\n");
+    printf("\n GRAMMAR\n");
+    printf("\n E->E+E\n E->E/E\n E->E*E\n E->a/b");
+
+    printf("\n Enter the input symbol:\t");
+    fgets(ip_sym, sizeof(ip_sym), stdin);
+    len = strlen(ip_sym);
+
+    printf("\n\t Stack Implementation Table");
+    printf("\n Stack\t\t Input Symbol\t\t Action");
+    printf("\n $\t\t%s$\t\t\t--", ip_sym);
+
+    for (ip_ptr = 0; ip_ptr <= len - 1; ip_ptr++) {
+        stack[st_ptr] = ip_sym[ip_ptr];
+        stack[st_ptr + 1] = '\0';
+
+        ip_sym[ip_ptr] = ' ';
+
+        printf("\n $%s\t\t%s$\t\t\tshift", stack, ip_sym);
+
+        check();
+        st_ptr++;
+    }
+
+    st_ptr++;
+    check();
+
+    return 0;
+}
+
+void check() {
+    char temp2[2];
+    int flag = 0;
+    temp2[0] = stack[st_ptr];
+    temp2[1] = '\0';
+
+    if ((temp2[0] == 'a') || (temp2[0] == 'b')) {
+        stack[st_ptr] = 'E';
+
+        printf("\n $%s\t\t%s$\t\t\tE->%c", stack, ip_sym, temp2[0]);
+
+        flag = 1;
+    }
+
+    if ((temp2[0] == '+') || (temp2[0] == '*') || (temp2[0] == '/')) {
+        flag = 1;
+    }
+
+    if ((!strcmp(stack, "E+E")) || (!strcmp(stack, "E/E")) || (!strcmp(stack, "E*E"))) {
+        strcpy(stack, "E");
+        st_ptr = 0;
+
+        printf("\n $%s\t\t%s$\t\t\tE->%s", stack, ip_sym, stack);
+
+        flag = 1;
+    }
+
+    if ((stack[0] == 'E') && (ip_ptr == len)) {
+        printf("\n $%s\t\t%s$\t\t\tACCEPT", stack, ip_sym);
+        exit(0);
+    }
+
+    if (flag == 0) {
+        printf("\n %s\t\t\t%s\t\t Reject", stack, ip_sym);
+        exit(0);
+    }
+}
+OUTPUT:
+
+                 SHIFT REDUCE PARSER
+
+ GRAMMAR
+
+ E->E+E
+ E->E/E
+ E->E*E
+ E->a/b
+ Enter the input symbol:        a+b
+
+         Stack Implementation Table
+ Stack           InputSymbol            Action
+ $              a+b
+ $                                         --
+ $a              +b
+ $                                        shift
+ $E              +b
+ $                                         E->a
+ $E+              b
+ $                                         shift
+ $E+b
+ $                                         shift
+ $E+E
+ $                                          E->b
+ $E
+ $                                         E->E
+ $E
+                  $                       shift
+ E
+                                         Reject
+--------------------------------
+Process exited after 9.685 seconds with return value 0
+Press any key to continue . . .
