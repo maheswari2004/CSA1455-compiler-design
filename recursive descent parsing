@@ -1,0 +1,80 @@
+#include <stdio.h>
+#include <ctype.h>
+
+// Function declarations
+void E();
+void T();
+void F();
+
+// Input string and index
+char input[100];
+int index = 0;
+
+// Error flag
+int errorFlag = 0;
+
+// Match function
+void match(char expected) {
+    if (input[index] == expected) {
+        index++;
+    } else {
+        errorFlag = 1;
+    }
+}
+
+// E -> T + E | T
+void E() {
+    T();
+    if (input[index] == '+') {
+        match('+');
+        E();
+    }
+}
+
+// T -> F * T | F
+void T() {
+    F();
+    if (input[index] == '*') {
+        match('*');
+        T();
+    }
+}
+
+// F -> (E) | id
+void F() {
+    if (input[index] == '(') {
+        match('(');
+        E();
+        match(')');
+    } else if (isalpha(input[index])) {
+        match(input[index]);
+    } else {
+        errorFlag = 1;
+    }
+}
+
+int main() {
+    // Input expression
+    printf("Enter an arithmetic expression: ");
+    scanf("%s", input);
+
+    // Parse the expression
+    E();
+
+    // Check for successful parsing
+    if (errorFlag == 0 && input[index] == '\0') {
+        printf("Parsing successful! The expression is valid.\n");
+    } else {
+        printf("Parsing failed! The expression is invalid.\n");
+    }
+
+    return 0;
+}
+
+OUTPUT:
+Enter an arithmetic expression: (a+b)*c
+Parsing successful! The expression is valid.
+
+--------------------------------
+Process exited after 6.321 seconds with return value 0
+Press any key to continue . . .
