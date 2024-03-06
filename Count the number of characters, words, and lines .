@@ -1,0 +1,18 @@
+%{
+#include <stdio.h>
+#include <stdlib.h>
+%}
+
+%%
+. { count_characters++; }
+\n { count_lines++; }
+[a-zA-Z] { count_words++; }
+%%
+
+int main() {
+    yylex();
+    printf("Number of characters: %d\n", count_characters);
+    printf("Number of words: %d\n", count_words);
+    printf("Number of lines: %d\n", count_lines);
+    return 0;
+}
